@@ -19,7 +19,8 @@ def replacer(repl):
             if len(a.split('.')) > 1:
                 templist[i] = a
             if re.search(r'\W', a[-1]):
-                templist[i] = a[:-1] + tm + ','
+                symb=a[-1]
+                templist[i] = a[:-1] + tm + symb
 
     listtostr = ' '.join(map(str, templist))
     return listtostr
