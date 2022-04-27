@@ -27,7 +27,6 @@ def replacer(repl):
                 templist[i] = a
 
     listtostr = ' '.join(map(str, templist))
-    print(listtostr)
     return listtostr
 
 
@@ -75,7 +74,6 @@ app = Flask('__main__')
 @app.route('/<path:path>')
 def proxy(path):
     addurl = argfix(request.args.to_dict(flat=True))
-    print(addurl)
     sw = switcher(f'{path}')
     if sw is None:
         return get(f'{SITE_NAME}{path}' + addurl).content
