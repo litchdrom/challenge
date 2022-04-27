@@ -19,10 +19,15 @@ def replacer(repl):
             if len(a.split('.')) > 1:
                 templist[i] = a
             if re.search(r'\W', a[-1]):
-                symb=a[-1]
+                symb = a[-1]
                 templist[i] = a[:-1] + tm + symb
+            if len(a.split('-')) > 1 or len(a.split('\'')) > 1:
+                templist[i] = a
+            if len(a.split('`')) > 1:
+                templist[i] = a
 
     listtostr = ' '.join(map(str, templist))
+    print(listtostr)
     return listtostr
 
 
@@ -38,7 +43,7 @@ def switcher(spath):
 def soupbrew(mad):
     soup = BeautifulSoup(mad, 'lxml')
     aftersoup = []
-    findtoure = soup.find_all(text=re.compile(r'\b[a-zA-Z]{6}\b'))
+    findtoure = soup.find_all(text=re.compile(r'\b[a-zA-Z]{6}\b[^-]'))
     for tmword in findtoure:
         fixed_text = replacer(tmword)
         tmword.replace_with(fixed_text)
