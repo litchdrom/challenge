@@ -9,6 +9,7 @@ additions = ['gif', 'png', 'ico', 'js', 'css']
 #forumparts = ['submit', 'points', 'Search:', 'parent', 'minute']
 forumparts = ['Search:']
 tm = '&trade;'
+SITE='https://news.ycombinator.com'
 
 def tmreplace(replacetm):
     if '™' in replacetm:
@@ -21,6 +22,8 @@ def tmreplace(replacetm):
 def replacer(repl):
     templist = repl.split()
     for i, a in enumerate(templist):
+ #       if re.search(r'https://news.ycombinator.com',a):
+        print('!!!!',a)
         if re.search(r'\b[a-zA-ZА-Яа-я]{6}\b', a) and a not in forumparts:
             print(a)
             a=tmreplace(a)
@@ -36,24 +39,11 @@ def replacer(repl):
             else:
                 templist[i] = a.replace(res[0],res[0]+tm)
 
-#            if a[len(a) - 2:] == '),':
-#                templist[i] = a[:-2] + tm + '),'
-#            if len(a.split('.')) > 1:
-#                templist[i] = a
-##            if re.search(r'\W', a[-1]):
-#                symb = a[-1]
-#                templist[i] = a[:-1] + tm + symb
-#            if len(a.split('-')) > 1 or len(a.split('\'')) > 1:
-#                templist[i] = a
-#            if len(a.split('`')) > 1:
-#                templist[i] = a
-#            if re.search(tm, a):
-#                templist[i] = a+'shit'
-
-
     listtostr = ' '.join(map(str, templist))
     return listtostr
 
+def urlsoup(links):
+    print(links)
 
 def switcher(spath):
     findf = spath.split(".")
@@ -66,15 +56,39 @@ def switcher(spath):
 
 def soupbrew(mad):
     soup = BeautifulSoup(mad, 'lxml')
+    soupu = BeautifulSoup(mad, 'html.parser')
     print(soup)
     aftersoup = []
+    tempurl = ''
+ #   findurll=soupu.find_all('a',href=True)
+   # for turl in findurll:
+  #      if SITE in turl['href']:
+ ##           print('######',turl)
+   #         tempurl= turl.get('href')
+   ##         print(tempurl,request.base_url,'!!!!!!!!')
+         #   turl['href']=request.base_url
+    #        turl.replace_with(request.base_url)
+
+
+
+    #print(findurll)
     findtoure = soup.find_all(text=re.compile(r'\b[a-zA-ZА-Яа-я]{6}\b'))
     for tmword in findtoure:
         fixed_text = replacer(tmword)
         tmword.replace_with(fixed_text)
         aftersoup.append(fixed_text)
     soupb = str(soup.prettify(formatter=None))
-    return soupb
+
+    soupu = BeautifulSoup(soupb, 'html.parser')
+    findurll = soupu.find_all('a', href=True)
+    for turl in findurll:
+        if SITE in turl['href']:
+            turl['href'] = request.base_url
+    findurll = str(soupu.prettify(formatter=None))
+        #    turl.replace_with(request.base_url)
+#    print(soupb)
+#    return soupb
+    return findurll
 
 
 def argfix(fix):
@@ -99,13 +113,16 @@ app = Flask('__main__')
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def proxy(path):
+    print('%%%%%%%%',request.base_url)
     addurl = argfix(request.args.to_dict(flat=True))
     sw = switcher(f'{path}')
     if sw is None:
         return get(f'{SITE_NAME}{path}' + addurl).content
     else:
         mad = get(f'{SITE_NAME}{path}' + addurl).text
+#        urlreplace=get(f'{SITE_NAME}{path}' + addurl)
         soupswitch = soupbrew(mad)
+
         return soupswitch
 
 
