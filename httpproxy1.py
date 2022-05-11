@@ -12,7 +12,7 @@ tm = '&trade;'
 def replacer(repl):
     templist = repl.split()
     for i, a in enumerate(templist):
-        if re.search(r'\b[a-zA-Z]{6}\b', a) and a not in forumparts:
+        if re.search(r'\b[a-zA-ZА-Яа-я]{6}\b', a) and a not in forumparts:
             templist[i] = a + tm
             if a[len(a) - 2:] == '),':
                 templist[i] = a[:-2] + tm + '),'
@@ -42,7 +42,7 @@ def switcher(spath):
 def soupbrew(mad):
     soup = BeautifulSoup(mad, 'lxml')
     aftersoup = []
-    findtoure = soup.find_all(text=re.compile(r'\b[a-zA-Z]{6}\b[^-]'))
+    findtoure = soup.find_all(text=re.compile(r'\b[a-zA-ZА-Яа-я]{6}\b[^-]'))
     for tmword in findtoure:
         fixed_text = replacer(tmword)
         tmword.replace_with(fixed_text)
