@@ -66,8 +66,9 @@ def switcher(spath):
 
 def soupbrew(mad):
     soup = BeautifulSoup(mad, 'lxml')
+    print(soup)
     aftersoup = []
-    findtoure = soup.find_all(text=re.compile(r'\b[a-zA-ZА-Яа-я]{6}\b[^-]'))
+    findtoure = soup.find_all(text=re.compile(r'\b[a-zA-ZА-Яа-я]{6}\b'))
     for tmword in findtoure:
         fixed_text = replacer(tmword)
         tmword.replace_with(fixed_text)
