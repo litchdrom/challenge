@@ -14,7 +14,7 @@ SITE='https://news.ycombinator.com'
 def tmreplace(replacetm):
     if '™' in replacetm:
         tmartefact = replacetm.replace('™', '')
-        print("!!!!!!!!!!!!!!!!!!!!!", replacetm.replace('™', ''))
+#        print("!!!!!!!!!!!!!!!!!!!!!", replacetm.replace('™', ''))
         return tmartefact
     else:
         return replacetm
@@ -33,7 +33,7 @@ def replacer(repl):
             if len(res) > 1:
                 if not res[0] in HTTPLST:
                     for findsix in res:
-                        print(findsix,'$$$')
+#                        print(findsix,'$$$')
                         if len(findsix) == 6:
                             templist[i] = a.replace(findsix,findsix+tm)
             else:
@@ -57,7 +57,7 @@ def switcher(spath):
 def soupbrew(mad):
     soup = BeautifulSoup(mad, 'lxml')
     soupu = BeautifulSoup(mad, 'html.parser')
-    print(soup)
+ #   print(soup)
     aftersoup = []
     tempurl = ''
  #   findurll=soupu.find_all('a',href=True)
@@ -113,17 +113,24 @@ app = Flask('__main__')
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def proxy(path):
-    print('%%%%%%%%',request.base_url)
+    print('%%%%%%%%',request)
     addurl = argfix(request.args.to_dict(flat=True))
     sw = switcher(f'{path}')
     if sw is None:
-        return get(f'{SITE_NAME}{path}' + addurl).content
+        mad = get(f'{SITE_NAME}{path}' + addurl).content
+        htanswer=get(f'{SITE_NAME}{path}' + addurl).status_code
+        print(htanswer)
+
+        return mad,htanswer
     else:
+
         mad = get(f'{SITE_NAME}{path}' + addurl).text
+        htanswer = get(f'{SITE_NAME}{path}' + addurl).status_code
+        print(htanswer)
 #        urlreplace=get(f'{SITE_NAME}{path}' + addurl)
         soupswitch = soupbrew(mad)
 
-        return soupswitch
+        return soupswitch, htanswer
 
 
 app.run(host='0.0.0.0', port=8232)
