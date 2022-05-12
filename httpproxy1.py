@@ -13,16 +13,14 @@ SITE = 'https://news.ycombinator.com'
 
 def replacer(repl):
     flist = re.findall(r'\w+|™', repl)
-    print(flist)
     for val in set(flist):
         valtm = val + TM
         if val == '™':
-            repl = re.sub(val,'', repl, count=0, flags=0)
-        elif len(val) == 6:
             print(val)
-           # valtm = val + TM
+            repl = re.sub(val,valtm[:-2], repl, count=0, flags=0)
+        if len(val) == 6:
+            print(val)
             repl = re.sub(val, valtm, repl, count=0, flags=0)
-
 
     return repl
 
