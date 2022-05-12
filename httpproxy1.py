@@ -7,7 +7,7 @@ SITE_NAME = 'https://news.ycombinator.com/'
 HTTPLST = ['http', 'https']
 CONTENT = ['gif', 'png', 'ico', 'js', 'css']
 FORUMPARTS = ['Search:']
-#TM = '&trade;'
+# TM = '&trade;'
 TM = u"\u2122"
 SITE = 'https://news.ycombinator.com'
 
@@ -21,26 +21,13 @@ def tmreplace(replacetm):
 
 
 def replacer(repl):
+    flist = re.findall(r'\w+', repl)
+    for val in set(flist):
+        if len(val) == 6:
+            valtm = val + TM
+            repl = re.sub(val, valtm, repl, count=0, flags=0)
 
-    templist = repl.split()
-    for i, a in enumerate(templist):
-        if re.search(r'\b[a-zA-ZА-Яа-я]{6}\b', a) and a not in FORUMPARTS:
-            print(a)
-            a = tmreplace(a)
-            res = re.findall(r'\w+', a)
-            if len(res) > 1:
-                if not res[0] in HTTPLST:
-                    for findsix in res:
-                        if len(findsix) == 6:
-                            templist[i] = a.replace(findsix, findsix + TM)
-                      #      repl.replace(findsix, findsix + TM)
-
-            else:
-                templist[i] = a.replace(res[0], res[0] + TM)
-             #   repl.replace(res[0], res[0] + TM)
-
-    listtostr = ' '.join(map(str, templist))
-    return listtostr
+    return repl
 
 
 def switcher(spath):
@@ -53,34 +40,17 @@ def switcher(spath):
 
 
 def soupbrew(mad):
-   # soup = BeautifulSoup(mad, 'lxml')
-#    soupu = BeautifulSoup(mad, 'html.parser')
     soupu = BeautifulSoup(mad, 'lxml')
-    aftersoup = []
-    tempurl = ''
-#    print(soupu)
     findurll = soupu.find_all('a', href=True)
     for turl in findurll:
         if SITE in turl['href']:
-      #      print('!!!!!!!!!!!!!!!',request.base_url.split('/')[0:2],request.host_url )
             turl['href'] = request.host_url
-#    findurll = str(soupu.prettify(formatter=None))
-  #  findurll = str(soupu.prettify(formatter=None))
-#    print
     soup = soupu
-#    soup = BeautifulSoup(str(soupu), 'lxml')
-#    soup = BeautifulSoup(str(soupu.prettify(formatter='html')))
-    print('22222',soup)
-    findtoure = soup.find_all(text=re.compile(r'\b[a-zA-ZА-Яа-я]{6}\b'),recursive=True)
+    findtoure = soup.find_all(text=re.compile(r'\b[a-zA-ZА-Яа-я]{6}\b'), recursive=True)
     for tmword in findtoure:
         fixed_text = replacer(tmword)
-        print(tmword,'!!!!!!@@@@')
         tmword.replace_with(fixed_text)
- #       aftersoup.append(fixed_text)
-  #  soupb = str(soup.prettify(formatter=None))
-    soupb=str(soup).encode()
- #   print('3333',soupb)
-  #  soupu = BeautifulSoup(soupb, 'html.parser')
+    soupb = str(soup).encode()
 
     return soupb
 
