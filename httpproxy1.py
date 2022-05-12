@@ -11,21 +11,18 @@ FORUMPARTS = ['Search:']
 TM = u"\u2122"
 SITE = 'https://news.ycombinator.com'
 
-
-def tmreplace(replacetm):
-    if '™' in replacetm:
-        tmartefact = replacetm.replace('™', '')
-        return tmartefact
-    else:
-        return replacetm
-
-
 def replacer(repl):
-    flist = re.findall(r'\w+', repl)
+    flist = re.findall(r'\b[a-zA-ZА-Яа-я]{6}\b|™', repl)
+    print(flist)
     for val in set(flist):
-        if len(val) == 6:
-            valtm = val + TM
+        valtm = val + TM
+        if val == '™':
+            repl = re.sub(val,'', repl, count=0, flags=0)
+        elif len(val) == 6:
+            print(val)
+           # valtm = val + TM
             repl = re.sub(val, valtm, repl, count=0, flags=0)
+
 
     return repl
 
