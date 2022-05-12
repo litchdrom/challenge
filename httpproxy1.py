@@ -12,7 +12,7 @@ TM = u"\u2122"
 SITE = 'https://news.ycombinator.com'
 
 def replacer(repl):
-    flist = re.findall(r'\b[a-zA-ZА-Яа-я]{6}\b|™', repl)
+    flist = re.findall(r'\w+|™', repl)
     print(flist)
     for val in set(flist):
         valtm = val + TM
