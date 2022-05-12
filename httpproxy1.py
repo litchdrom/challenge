@@ -16,10 +16,8 @@ def replacer(repl):
     for val in set(flist):
         valtm = val + TM
         if val == '™':
-            print(val)
             repl = re.sub(val,valtm[:-2], repl, count=0, flags=0)
         if len(val) == 6:
-            print(val)
             repl = re.sub(val, valtm, repl, count=0, flags=0)
 
     return repl
