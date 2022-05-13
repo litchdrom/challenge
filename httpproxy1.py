@@ -11,12 +11,13 @@ FORUMPARTS = ['Search:']
 TM = u"\u2122"
 SITE = 'https://news.ycombinator.com'
 
+
 def replacer(repl):
     flist = re.findall(r'\w+|™', repl)
     for val in set(flist):
         valtm = val + TM
         if val == '™':
-            repl = re.sub(val,valtm[:-2], repl, count=0, flags=0)
+            repl = re.sub(val, valtm[:-2], repl, count=0, flags=0)
         if len(val) == 6:
             repl = re.sub(val, valtm, repl, count=0, flags=0)
 
@@ -37,7 +38,7 @@ def soupbrew(mad):
     findurll = soupu.find_all('a', href=True)
     for turl in findurll:
         if SITE in turl['href']:
-            turl['href'] = request.host_url
+            turl['href'] = turl['href'].replace(SITE,request.host_url[:-1])
     soup = soupu
     findtoure = soup.find_all(text=re.compile(r'\b[a-zA-ZА-Яа-я]{6}\b'), recursive=True)
     for tmword in findtoure:
